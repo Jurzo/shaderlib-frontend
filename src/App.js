@@ -22,14 +22,21 @@ class App extends Component {
   }
 
   refreshPage = () => {
-    this.setState({
-      refresh: true
-    })
+    AuthenticationService.getData('/shaders')
+      .then(resp => resp.data)
+      .then(data => {
+        this.setState({
+          refresh: true,
+          shaderList: data
+        })
+        console.log(data);
+      })
   }
 
   async componentDidMount() {
     const response = await AuthenticationService.getData('/shaders');
     const body = await response.data;
+    console.log(body);
     this.setState({ shaderList: body, isLoading: false });
     if (AuthenticationService.isUserLoggedIn()) {
       AuthenticationService.reloadInterceptors();
@@ -74,15 +81,18 @@ class App extends Component {
         <Router>
           <div class="div1">
             <nav className="navbar">
-              <Link to="/"><button className="myButton">Home</button></Link>
+              <Link to="/"><button className="myButton" onClick={refreshPage}>Home</button></Link>
               <Link to="/shader/-1"><button className="myButton">New</button></Link>
 
               {AuthenticationService.isUserLoggedIn()
-                ? <button className="myButton" onClick={logout} >Logout</button>
+                ? <Link to={{
+                  pathname: '/'
+                }}><button className="myButton" onClick={logout} >Logout</button></Link>
                 : <Link to={{
-                    pathname: '/login',
-                    toggle: refreshPage}}>
-                    <button className="myButton">Login</button></Link>}
+                  pathname: '/login',
+                  toggle: refreshPage
+                }}>
+                  <button className="myButton">Login</button></Link>}
             </nav>
           </div>
           <div class="div2">
