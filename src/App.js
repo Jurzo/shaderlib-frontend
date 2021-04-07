@@ -4,11 +4,12 @@ import 'codemirror/theme/monokai.css';
 import './App.css';
 import AuthenticationService from './components/service/AuthenticationService';
 import axios from 'axios';
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import ShaderLibComponent from './components/ShaderLibComponent';
 import ShaderList from './components/ShaderList';
 import Login from './components/Login';
+import Navbar from './components/Navbar';
 
 const API_URL = "http://localhost:8080"
 
@@ -65,7 +66,7 @@ class App extends Component {
           postData,
           axiosConfig
         )
-          .then(response => {
+          .then(_ => {
             AuthenticationService.logout();
             refreshPage();
           })
@@ -80,20 +81,7 @@ class App extends Component {
       <div class="parent">
         <Router>
           <div class="div1">
-            <nav className="navbar">
-              <Link to="/"><button className="myButton" onClick={refreshPage}>Home</button></Link>
-              <Link to="/shader/-1"><button className="myButton">New</button></Link>
-
-              {AuthenticationService.isUserLoggedIn()
-                ? <Link to={{
-                  pathname: '/'
-                }}><button className="myButton" onClick={logout} >Logout</button></Link>
-                : <Link to={{
-                  pathname: '/login',
-                  toggle: refreshPage
-                }}>
-                  <button className="myButton">Login</button></Link>}
-            </nav>
+            <Navbar logout={logout} refreshPage={refreshPage} />
           </div>
           <div class="div2">
             <Route path="/login" component={Login} />
