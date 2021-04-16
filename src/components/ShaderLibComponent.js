@@ -37,6 +37,7 @@ const ShaderLibComponent = (props) => {
     const shaderData = {
       id: id,
       name: name,
+      author: AuthenticationService.getAuth1(),
       fsource: fragmentData,
       vsource: vertexData
     }
@@ -151,13 +152,13 @@ const ShaderLibComponent = (props) => {
             </td>
 
           <td>
-            {AuthenticationService.isAdmin() ?
+            {AuthenticationService.isUserLoggedIn() ?
               <button class="updateButton" onClick={() => update()}>save</button> :
               null
             }
           </td>
           <td>
-            {AuthenticationService.isAdmin() ?
+            {AuthenticationService.isUserLoggedIn() ?
               <button class="updateButton" onClick={handleClickOpen}>change name</button> :
               null
             }

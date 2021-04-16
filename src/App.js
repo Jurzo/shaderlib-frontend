@@ -11,7 +11,7 @@ import ShaderList from './components/ShaderList';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
 
-const API_URL = "http://localhost:8080"
+require('dotenv').config();
 
 class App extends Component {
   state = {
@@ -60,7 +60,7 @@ class App extends Component {
 
         const axiosConfig = AuthenticationService.getAxiosConfig();
 
-        const url = API_URL + '/user/signout/';
+        const url = process.env.REACT_APP_API_URL + '/user/signout/';
 
         axios.post(url,
           postData,

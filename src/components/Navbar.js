@@ -7,9 +7,12 @@ function Navbar(props) {
   return (
     <nav className="navbar">
       <Link to="/"><button className="myButton" onClick={props.refreshPage}>Home</button></Link>
-      <Link to="/shader/-1">
-        <button className="myButton">New</button>
-      </Link>
+
+      {AuthenticationService.isUserLoggedIn()
+        ? <Link to="/shader/-1">
+            <button className="myButton">New</button>
+          </Link>
+        : <a href={process.env.REACT_APP_API_URL + '/register'}><button className="myButton">Register</button></a>}
 
       {AuthenticationService.isUserLoggedIn()
         ? <Link to={{
