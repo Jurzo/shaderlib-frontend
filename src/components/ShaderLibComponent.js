@@ -23,6 +23,7 @@ const ShaderLibComponent = (props) => {
   const [fragmentId, setFragmentId] = useState("");
   const [name, setName] = useState("");
   const [id, setId] = useState("");
+  const [author, setAuthor] = useState("");
   const params = useParams();
 
   const update = () => {
@@ -37,7 +38,7 @@ const ShaderLibComponent = (props) => {
     const shaderData = {
       id: id,
       name: name,
-      author: AuthenticationService.getAuth1(),
+      author: author,
       fsource: fragmentData,
       vsource: vertexData
     }
@@ -106,6 +107,7 @@ const ShaderLibComponent = (props) => {
       setFragmentId(shader.fsource.id);
       setName(shader.name);
       setId(shader.id);
+      setAuthor(shader.author);
     } else {
       AuthenticationService.getData("/newshader")
         .then(response => response.data)
@@ -118,6 +120,7 @@ const ShaderLibComponent = (props) => {
           setFragmentId(-1);
           setId(-1); // to not overwrite old shader
           setName(shader.name);
+          setAuthor(AuthenticationService.getAuth1());
         })
         .catch(error => {
           console.log(error)
@@ -147,22 +150,22 @@ const ShaderLibComponent = (props) => {
       <table style={{ margin: 'auto' }}>
         <tr>
 
-            <td>
-              <h1 style={{ textAlign: 'center' }}>{name}</h1>
-            </td>
+          <td>
+            <h1 style={{ textAlign: 'center' }}>{name}</h1>
+          </td>
 
-          <td>
-            {AuthenticationService.isUserLoggedIn() ?
-              <button class="updateButton" onClick={() => update()}>save</button> :
-              null
-            }
-          </td>
-          <td>
-            {AuthenticationService.isUserLoggedIn() ?
-              <button class="updateButton" onClick={handleClickOpen}>change name</button> :
-              null
-            }
-          </td>
+          {(AuthenticationService.isUserLoggedIn() && AuthenticationService.getAuth1() === author)
+          || AuthenticationService.isAdmin() ?
+            <div>
+              <td>
+                <button class="updateButton" onClick={() => update()}>save</button>
+              </td>
+              <td>
+                <button class="updateButton" onClick={handleClickOpen}>change name</button>
+              </td>
+            </div>
+            : null
+          }
         </tr>
       </table>
       <CanvasComponent
