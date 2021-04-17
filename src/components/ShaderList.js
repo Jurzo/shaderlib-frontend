@@ -10,7 +10,7 @@ const ShaderList = (props) => {
                 className="shader-list-section"
                 key={index}
                 onClick={() => {
-                    window.location.href='http://localhost:3000/shader/' + index;
+                    window.location.href = process.env.REACT_APP_API_URL + '/shader/' + index;
                 }}>
                     <CanvasComponent
                         resolution={size}
