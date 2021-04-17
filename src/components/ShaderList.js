@@ -10,7 +10,7 @@ const ShaderList = (props) => {
                 className="shader-list-section"
                 key={index}
                 onClick={() => {
-                    window.location.href = process.env.REACT_APP_API_URL + '/shader/' + index;
+                    window.location.href = process.env.SITE_URL + '/shader/' + index;
                 }}>
                     <CanvasComponent
                         resolution={size}
