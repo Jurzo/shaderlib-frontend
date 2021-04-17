@@ -24,6 +24,8 @@ const ShaderLibComponent = (props) => {
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [author, setAuthor] = useState("");
+
+  const [isLoading, setLoading] = useState(true);
   const params = useParams();
 
   const update = () => {
@@ -108,6 +110,7 @@ const ShaderLibComponent = (props) => {
       setName(shader.name);
       setId(shader.id);
       setAuthor(shader.author);
+      setLoading(false);
     } else {
       AuthenticationService.getData("/newshader")
         .then(response => response.data)
@@ -121,6 +124,7 @@ const ShaderLibComponent = (props) => {
           setId(-1); // to not overwrite old shader
           setName(shader.name);
           setAuthor(AuthenticationService.getAuth1());
+          setLoading(false);
         })
         .catch(error => {
           console.log(error)
@@ -143,6 +147,10 @@ const ShaderLibComponent = (props) => {
 
   const inputChanged = (event) => {
     setInput(event.target.value);
+  }
+
+  if (isLoading) {
+    return <p>Loading...</p>
   }
 
   return (
