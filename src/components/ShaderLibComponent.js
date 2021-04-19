@@ -8,6 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import SnackBar from '@material-ui/core/Snackbar';
 
 import CanvasComponent from './CanvasComponent';
 import EditorComponent from './EditorComponent';
@@ -26,6 +27,8 @@ const ShaderLibComponent = (props) => {
   const [author, setAuthor] = useState("");
 
   const [isLoading, setLoading] = useState(true);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("Upload failed");
   const params = useParams();
 
   const update = () => {
@@ -44,37 +47,10 @@ const ShaderLibComponent = (props) => {
       fsource: fragmentData,
       vsource: vertexData
     }
-    if (id === -1) {
-      postNew(shaderData);
-    } else {
-      post(shaderData);
-    }
+    post(shaderData);
   }
 
   const post = (shaderData) => {
-    AuthenticationService.postData(shaderData.vsource, 'vertexshader').then(response => {
-      console.log(response.data);
-
-      AuthenticationService.postData(shaderData.fsource, 'fragmentshader').then(response => {
-        console.log(response.data);
-
-        AuthenticationService.postData(shaderData, 'shader').then(response => {
-          console.log(response.data);
-        })
-          .catch(error => {
-            console.log(error);
-          });
-      })
-        .catch(error => {
-          console.log(error);
-        });
-    })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-
-  const postNew = (shaderData) => {
     let shader = shaderData;
     AuthenticationService.postData(shader.vsource, 'vertexshader').then(response => {
       shader.vsource.id = response.data.id;
@@ -86,6 +62,8 @@ const ShaderLibComponent = (props) => {
 
         AuthenticationService.postData(shader, 'shader').then(response => {
           console.log(response.data);
+          setSnackMessage("Upload successful");
+          setSnackBarOpen(true);
         })
           .catch(error => {
             console.log(error);
@@ -97,6 +75,8 @@ const ShaderLibComponent = (props) => {
     })
       .catch(error => {
         console.log(error);
+        setSnackMessage("Upload failed");
+        setSnackBarOpen(true);
       });
   }
 
@@ -149,6 +129,10 @@ const ShaderLibComponent = (props) => {
     setInput(event.target.value);
   }
 
+  const closeSnackBar = () => {
+    setSnackBarOpen(false);
+  }
+
   if (isLoading) {
     return <p>Loading...</p>
   }
@@ -163,7 +147,7 @@ const ShaderLibComponent = (props) => {
           </td>
 
           {(AuthenticationService.isUserLoggedIn() && AuthenticationService.getAuth1() === author)
-          || AuthenticationService.isAdmin() ?
+            || AuthenticationService.isAdmin() ?
             <div>
               <td>
                 <button class="updateButton" onClick={() => update()}>save</button>
@@ -216,6 +200,12 @@ const ShaderLibComponent = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <SnackBar
+        open={snackBarOpen}
+        message={snackMessage}
+        autoHideDuration={6000}
+        onClose={closeSnackBar}
+      />
     </div>
   );
 
